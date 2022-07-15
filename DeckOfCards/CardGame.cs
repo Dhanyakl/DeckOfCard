@@ -1,65 +1,61 @@
-﻿using DeckOfCards;
+using DeckOfCards;
 
 public class CardGame: ICard
 {
-    public List<CardMain> CardSet;
+    public List<CardMain> cardSet;
 
-    public Random RandomNo;
+    public Random randomNo;
     public CardGame()
     {
-        CardSet = new List<CardMain>();
+        cardSet = new List<CardMain>();
         for (var i = 0; i < Enum.GetValues(typeof(CardSuit)).Length; i++)
         {
             for (var j = 0; j < Enum.GetValues(typeof(CardRank)).Length; j++)
             {
                 var card = new CardMain((CardSuit)i, (CardRank)j);
-                CardSet.Add(card);
+                cardSet.Add(card);
             }
         }
-        RandomNo = new Random();
+        randomNo = new Random();
     }
 
     public void Shuffle()
     {
-        for (int FirstCard = 0; FirstCard < CardSet.Count; FirstCard++)
+        for (int firstCard = 0; firstCard < cardSet.Count; firstCard++)
         {
-            int SecondCard = RandomNo.Next(CardSet.Count);
-            CardMain temp = CardSet[FirstCard];
-            CardSet[FirstCard] = CardSet[SecondCard];
-            CardSet[SecondCard] = temp;
+            int secondCard = randomNo.Next(cardSet.Count);
+            CardMain temp = cardSet[firstCard];
+            cardSet[firstCard] = cardSet[secondCard];
+            cardSet[secondCard] = temp;
         }
-
         ShowCards();
     }
 
     public void ShowCards()
     {
-        for (int count = 0; count < CardSet.Count; count++)
+        for (int count = 0; count < cardSet.Count; count++)
         {
-            Console.Write("{0,-20}", CardSet[count]);
+            Console.Write("{0,-20}", cardSet[count]);
             if ((count + 1) % 4 == 0)
             {
                 Console.WriteLine();
             }
         }
-
     }
 
     public void CompareCards()
     {
-        List<CardMain> selectedcards = new List<CardMain>();
+        List<CardMain> selectedCards = new List<CardMain>();
         for (int count = 0; count < 2; count++)
         {
-            int SelectedCard = RandomNo.Next(CardSet.Count);
-            selectedcards.Add(CardSet[SelectedCard]);
+            int selectedCard = randomNo.Next(cardSet.Count);
+            selectedCards.Add(cardSet[selectedCard]);
         }
-
-        foreach (var card in selectedcards)
+        foreach (var card in selectedCards)
         {
             Console.WriteLine(card);
         }
-
-        var compareCards = from cards in selectedcards
+        var compareCards = from cards in selectedCards
                            orderby cards.Rank ascending
                           select cards;
         var highestCard = compareCards.FirstOrDefault();
@@ -89,7 +85,7 @@ public class CardGame: ICard
 
     private List<CardMain> GetSortedList()
     {
-        return CardSet
+        return cardSet
                         .GroupBy(l => l.Suit)
                         .OrderByDescending(g => g.Count())
                         .SelectMany(g => g.OrderByDescending(c => c.Rank)).ToList();
@@ -120,21 +116,20 @@ public class CardGame: ICard
     {
         Console.WriteLine("Input the number of cards wish to draw");
         int cardCount = Convert.ToInt16(Console.ReadLine());
-        List<CardMain> selectedcards = new List<CardMain>();
+        List<CardMain> selectedCards = new List<CardMain>();
         if(cardCount> 52 || cardCount <0)
         {
-            Console.WriteLine("Invalid input. Enter a valid number");            
-        }
+            Console.WriteLine("Invalid input. Enter a valid number");
+            return;
+         }
         for (int count = 0; count < cardCount; count++)
         {
-            int SelectedCard = RandomNo.Next(CardSet.Count);
-            selectedcards.Add(CardSet[SelectedCard]);
+            int SelectedCard = randomNo.Next(cardSet.Count);
+            selectedCards.Add(cardSet[SelectedCard]);
         }
-
-        foreach (var card in selectedcards)
+        foreach (var card in selectedCards)
         {
             Console.WriteLine(card);
         }
-       
     }
 }
